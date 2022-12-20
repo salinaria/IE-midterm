@@ -1,0 +1,65 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  color: #c9d1d9;
+}
+a {
+  text-decoration: none;
+  color: #c9d1d9;
+}
+a:hover {
+  text-decoration: underline;
+  color: darkblue;
+}
+.main {
+  margin-top: 0px;
+  margin-left: 0px;
+  display: flex;
+  flex-direction: row;
+}
+
+.id-get {
+  width: 15vw;
+  margin-top: 15vh;
+  padding: 10px;
+  padding-top: 8vw;
+  display: flex;
+  flex-direction: column;
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5.6px);
+  -webkit-backdrop-filter: blur(5.6px);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+}
+
+.results {
+  visibility: hidden;
+  margin-left: 15vw;
+  width:max-content;
+  max-width: 50vw;
+  margin-top: 15vh;
+  margin-right: 1vw;
+  display: flex;
+  padding: 20px;
+  flex-direction: column;
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5.6px);
+  -webkit-backdrop-filter: blur(5.6px);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+}
+.results .text {
+  display: flex;
+  font-size: 20px;
+  margin-left: 0px;
+  flex-direction: column;
+}
+.results .image {
+  width: 20vw;
+  border-radius: 20px;
+  margin-right: 20px;
+}

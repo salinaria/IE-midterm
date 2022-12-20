@@ -7,40 +7,118 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body>
+  <body
+    style="
+      background: url('./octcat.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+    "
+  >
     <script>
-        // Get id from user and send request to Github
-        function get_id() {
-            var id = document.getElementById("id").value;
-            fetch("https://api.github.com/users/" + id)
-            .then((response) => {
-                return response.json();
-            })
-            .then((myJson) => {
-                var name = myJson.name;
-                var image = myJson.avatar_url;
-                var blog = myJson.blog;
-                var bio = myJson.bio;
-                var location = myJson.location;
+      // Get id from user and send request to Github
+      function get_id() {
+        var id = document.getElementById("id").value;
+        fetch("https://api.github.com/users/" + id)
+          .then((response) => {
+            return response.json();
+          })
+          .then((myJson) => {
+            var name = myJson.name;
+            var image = myJson.avatar_url;
+            var blog = myJson.blog;
+            var bio = myJson.bio;
+            var location = myJson.location;
 
-                console.log(myJson);
-                document.getElementById("name").innerHTML = name;
-                document.getElementById("blog").innerHTML = blog;
-                document.getElementById("bio").innerHTML = bio;
-                document.getElementById("location").innerHTML = location;
-                document.getElementById("image").src = image;
-            });
-        }
+            console.log(myJson);
+            document.getElementById("name").innerHTML = name;
+            document.getElementById("blog").href = blog;
+            document.getElementById("blog").innerHTML = blog;
+            document.getElementById("bio").innerHTML = bio;
+            document.getElementById("location").innerHTML = location;
+            document.getElementById("image").src = image;
+            document.getElementById('results').style.visibility = 'visible';
+          });
+      }
     </script>
 
-    ID: <input type="text" id="id" />
+    <div class="main">
+      <div id = 'results' class="results">
+        <div style="display: flex;flex-direction: row;max-width:fit-content;">
+          <!--Image-->
+          <img id="image" class="image" src="./profile.png" />
 
-    <button onclick="get_id()">Try it</button>
+          <div class="text">
+            <!--Name-->
+            <h2 id="name"></h2>
 
-    <p id="name"></p>
-    <p id="blog"></p>
-    <p id="bio"></p>
-    <p id="location"></p>
-    <img id="image" />
+            <!--Blog-->
+            <div
+              style="
+                display: flex;
+                flex-direction: row;
+                margin-bottom: 20px;
+                width: 50%;
+              "
+            >
+              <img
+                src="./link.ico"
+                style="
+                  width: 20px;
+                  height: 20px;
+                  margin-right: 10px;
+                  margin-bottom: 0px;
+                  opacity: 0.5;
+                "
+              />
+              <a style="margin-top: -5px; width: 50%" id="blog"></a>
+            </div>
+
+            <!--Location-->
+            <div style="display: flex; flex-direction: row">
+              <img
+                src="./location.ico"
+                style="
+                  width: 20px;
+                  height: 20px;
+                  margin-right: 10px;
+                  margin-bottom: 0px;
+                  opacity: 0.5;
+                "
+              />
+              <p style="margin-top: -5px" id="location"></p>
+            </div>
+          </div>
+        </div>
+
+        <!--Bio-->
+        <div
+          style="
+            display: flex;
+            flex-direction: row;
+            margin-top: 20px;
+            margin-right: 0px;
+            width:fit-content;
+          "
+        >
+          <img
+            src="./bio.ico"
+            style="
+              width: 25px;
+              height: 25px;
+              margin-right: 10px;
+              margin-bottom: 0px;
+              opacity: 0.7;
+            "
+          />
+          <p style="margin-top: 2px; max-width: 40vw;" id="bio"></p>
+        </div>
+      </div>
+
+      <!--Get ID-->
+      <div class="id-get">
+        ID: <input type="text" id="id" />
+        <button class="button" onclick="get_id()">Try it</button>
+      </div>
+    </div>
   </body>
 </html>
