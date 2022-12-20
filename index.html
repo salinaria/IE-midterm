@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GitHub</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <script>
+        // Get id from user and send request to Github
+        function get_id() {
+            var id = document.getElementById("id").value;
+            fetch("https://api.github.com/users/" + id)
+            .then((response) => {
+                return response.json();
+            })
+            .then((myJson) => {
+                var name = myJson.name;
+                var image = myJson.avatar_url;
+                var blog = myJson.blog;
+                var bio = myJson.bio;
+                var location = myJson.location;
+
+                console.log(myJson);
+                document.getElementById("name").innerHTML = name;
+                document.getElementById("blog").innerHTML = blog;
+                document.getElementById("bio").innerHTML = bio;
+                document.getElementById("location").innerHTML = location;
+                document.getElementById("image").src = image;
+            });
+        }
+    </script>
+
+    ID: <input type="text" id="id" />
+
+    <button onclick="get_id()">Try it</button>
+
+    <p id="name"></p>
+    <p id="blog"></p>
+    <p id="bio"></p>
+    <p id="location"></p>
+    <img id="image" />
+  </body>
+</html>
