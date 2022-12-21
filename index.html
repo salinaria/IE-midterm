@@ -17,10 +17,18 @@
     <script>
       // Get id from user and send request to Github
       function get_id() {
+        document.getElementById("results").style.visibility = "hidden";
         var id = document.getElementById("id").value;
+
+        // Fetch user information
         fetch("https://api.github.com/users/" + id)
           .then((response) => {
-            return response.json();
+            if (response.status != 404) {
+              document.getElementById("usernot").style.display = "none";
+              return response.json();
+            } else {
+              document.getElementById("usernot").style.display = "block";
+            }
           })
           .then((myJson) => {
             var name = myJson.name;
@@ -29,71 +37,99 @@
             var bio = myJson.bio;
             var location = myJson.location;
 
-            if (name != '') {
+            // Remove last user information
+            document.getElementById("name").innerHTML = "";
+            document.getElementById("name").style.display = "none";
+
+            document.getElementById("blog").href = "";
+            document.getElementById("blogid").style.display = "none";
+
+            document.getElementById("bio").innerHTML = null;
+            document.getElementById("bioid").style.display = "none";
+
+            document.getElementById("location").innerHTML = null;
+            document.getElementById("locid").style.display = "none";
+
+            // Add new information
+            if (name != "") {
               document.getElementById("name").innerHTML = name;
               document.getElementById("name").style.display = "flex";
             }
-            if (blog != '') {
-              console.log(blog)
+            if (blog != "") {
+              if (!blog.includes("http")) {
+                blog = "https://" + blog;
+              }
               document.getElementById("blog").href = blog;
               document.getElementById("blog").innerHTML = blog;
               document.getElementById("blogid").style.display = "flex";
             }
-            if (bio != '') {
+            if (bio != null) {
               document.getElementById("bio").innerHTML = bio;
               document.getElementById("bioid").style.display = "flex";
             }
-            if (location != '') {
+            if (location != null) {
               document.getElementById("location").innerHTML = location;
               document.getElementById("locid").style.display = "flex";
             }
 
             document.getElementById("image").src = image;
-          });
+            // Fetch user repositories
+            fetch("https://api.github.com/users/" + id + "/repos")
+              .then((response) => {
+                return response.json();
+              })
+              .then((myJson) => {
+                var arr = [];
+                for (repo in myJson) {
+                  arr.push([
+                    myJson[repo]["pushed_at"],
+                    myJson[repo]["language"],
+                  ]);
+                }
+                arr.sort().reverse();
 
-        fetch("https://api.github.com/users/" + id + "/repos")
-          .then((response) => {
-            return response.json();
-          })
-          .then((myJson) => {
-            var arr = [];
-            for (repo in myJson) {
-              arr.push([myJson[repo]["pushed_at"], myJson[repo]["language"]]);
-            }
-            arr.sort().reverse();
-            var langs = {};
-            var num = 0;
-            for (key in arr) {
-              if (num < 5) {
-                if (arr[key][1] != null) {
-                  num += 1;
-                  if (arr[key][1] in langs) {
-                    number = langs[arr[key][1]];
-                    langs[arr[key][1]] = number + 1;
-                  } else {
-                    langs[arr[key][1]] = 1;
+                // Create user dictionary languages
+                var langs = {};
+                var num = 0;
+                for (key in arr) {
+                  if (num < 5) {
+                    if (arr[key][1] != null) {
+                      num += 1;
+                      if (arr[key][1] in langs) {
+                        number = langs[arr[key][1]];
+                        langs[arr[key][1]] = number + 1;
+                      } else {
+                        langs[arr[key][1]] = 1;
+                      }
+                    }
                   }
                 }
-              }
-            }
-            let list = document.getElementById("myList");
-            list.innerHTML = "";
-            let list_star = document.getElementById("grade");
-            list_star.innerHTML = "";
 
-            for (item in langs) {
-              let li = document.createElement("li");
-              li.innerText = item;
-              list.appendChild(li);
+                // Remove last user languages
+                document.getElementById("langs").style.display = "none";
+                let list = document.getElementById("myList");
+                list.innerHTML = "";
+                let list_star = document.getElementById("grade");
+                list_star.innerHTML = "";
 
-              let lis = document.createElement("li");
-              var star = "";
-              for (i = 0; i < langs[item]; i++) {
-                star += "*";
-              }
-              lis.innerText = star;
-              list_star.appendChild(lis);
-            }
+                // Add new languages
+                if (Object.keys(langs).length != 0) {
+                  for (item in langs) {
+                    let li = document.createElement("li");
+                    li.innerText = item;
+                    list.appendChild(li);
+
+                    let lis = document.createElement("li");
+                    var star = "";
+                    for (i = 0; i < langs[item]; i++) {
+                      star += "*";
+                    }
+                    lis.innerText = star;
+                    list_star.appendChild(lis);
+                  }
+                  document.getElementById("langs").style.display = "flex";
+                }
+              });
             document.getElementById("results").style.visibility = "visible";
           });
       }
@@ -107,15 +143,16 @@
 
           <div class="text">
             <!--Name-->
-            <h2 style="display: flex;" id="name"></h2>
+            <h2 style="display: flex" id="name"></h2>
 
             <!--Blog-->
-            <div id = 'blogid'
+            <div
+              id="blogid"
               style="
                 display: none;
                 flex-direction: row;
                 margin-bottom: 20px;
-                width: 50%;
+                width: 100%;
                 display: none;
               "
             >
@@ -132,7 +169,7 @@
             </div>
 
             <!--Location-->
-            <div id = 'locid' style="display: none; flex-direction: row;">
+            <div id="locid" style="display: none; flex-direction: row">
               <img
                 src="./assets/location.png"
                 style="
@@ -145,11 +182,30 @@
               <p style="margin-top: -5px" id="location"></p>
             </div>
             <!--Languages-->
-            <div class="languages">
-              <h4 style="margin-bottom: 5px; color: #f29e21">Languages</h4>
+            <div id="langs" class="languages" style="display: none">
+              <img
+                src="./assets/langs.png"
+                style="
+                  width: 20px;
+                  height: 20px;
+                  margin-top: 0px;
+                  margin-right: 10px;
+                  margin-bottom: 0px;
+                "
+              />
+              <h4
+                style="
+                  margin-bottom: 5px;
+                  margin-top: -25px;
+                  margin-left: 30px;
+                  color: #f29e21;
+                "
+              >
+                Languages
+              </h4>
               <div style="display: flex; flex-direction: row">
                 <ul
-                  style="margin-right: 20px; margin-top: 15px"
+                  style="margin-right: 40px; margin-top: 15px"
                   id="myList"
                 ></ul>
                 <ul class="stars" id="grade"></ul>
@@ -159,7 +215,8 @@
         </div>
 
         <!--Bio-->
-        <div id = 'bioid'
+        <div
+          id="bioid"
           style="
             flex-direction: row;
             margin-top: 20px;
@@ -186,6 +243,22 @@
       <!--Get ID-->
       <div class="id-get">
         <h1>Give me ID!</h1>
+        <p
+          id="usernot"
+          style="
+            display: none;
+            background-color: red;
+            color: azure;
+            border-radius: 5px;
+            padding: 5px;
+            padding-bottom: 10px;
+            transition: all 200ms;
+            text-align: center;
+            margin-top: -3vw;
+          "
+        >
+          Username not found
+        </p>
         <input class="input" type="text" id="id" />
         <button class="button" onclick="get_id()">Let's Go!</button>
       </div>

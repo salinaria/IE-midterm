@@ -21,6 +21,7 @@ a:hover {
   flex-direction: row;
 }
 
+/* frame of get id part */
 .id-get {
   width: 15vw;
   margin-top: 15vh;
@@ -39,9 +40,12 @@ a:hover {
 .id-get h1 {
   text-align: center;
   font-style: italic;
+  margin-top: 2px;
   margin-bottom: 5vw;
   color: #f29e21;
 }
+
+/* input of get id part */
 .input {
   border-radius: 5px;
   transition: all 200ms;
@@ -59,6 +63,8 @@ a:hover {
   color: #f29e21;
   background-color: #222324;
 }
+
+/* button of get id part */
 .id-get button {
   background-color: #f29e21;
   border: none;
@@ -75,6 +81,8 @@ a:hover {
   border: #f29e21 3px solid;
 }
 
+
+/* frame of results part */
 .results {
   visibility: hidden;
   margin-left: 15vw;
@@ -93,6 +101,7 @@ a:hover {
   -webkit-backdrop-filter: blur(6.7px);
   border: 1px solid rgba(255, 255, 255, 1);
 }
+
 .results .text {
   display: flex;
   font-size: 20px;
@@ -107,10 +116,13 @@ a:hover {
   margin-right: 20px;
 }
 
+
+/* frame of languages part */
 .languages {
   margin-left: 0px;
   display: flex;
   flex-direction: column;
+  margin-top: 0px;
 }
 .languages ul {
   margin-left: -40px;
@@ -119,9 +131,10 @@ a:hover {
 }
 .stars {
   color: #f29e21;
-  font-size: 30px;
-  margin-top: 15px;
+  font-size: 35px;
+  margin-top: 12px;
 }
 .stars li {
-  margin-bottom: -12px;
+  margin-bottom: -20px;
+  text-align: center;
 }
