@@ -3,13 +3,16 @@ body {
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   color: #c9d1d9;
 }
+h2 {
+  color: #f29e21;
+}
 a {
   text-decoration: none;
   color: #c9d1d9;
 }
 a:hover {
   text-decoration: underline;
-  color: darkblue;
+  color:#f29e21;
 }
 .main {
   margin-top: 0px;
@@ -22,22 +25,60 @@ a:hover {
   width: 15vw;
   margin-top: 15vh;
   padding: 10px;
-  padding-top: 8vw;
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
   /* From https://css.glass */
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.33);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5.6px);
-  -webkit-backdrop-filter: blur(5.6px);
-  border: 1px solid rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(6.7px);
+  -webkit-backdrop-filter: blur(6.7px);
+  border: 1px solid rgba(255, 255, 255, 1);
+}
+.id-get h1 {
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 5vw;
+  color: #f29e21;
+}
+.input {
+  border-radius: 5px;
+  transition: all 200ms;
+  border: none;
+  height: 30px;
+  font-size: 16px;
+  background-color: #ebf5ff;
+  color:#222324;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.input:focus {
+  transition: all 200ms;
+  outline: #f29e21 3px solid;
+  color: #f29e21;
+  background-color: #222324;
+}
+.id-get button {
+  background-color: #f29e21;
+  border: none;
+  height: 35px;
+  color: #ebf5ff;
+  font-style: italic;
+  font-size: 20px;
+  border-radius: 5px;
+}
+.id-get button:hover {
+  transition: all 200ms;
+  color: #f29e21;
+  background-color: #222324;
+  border: #f29e21 3px solid;
 }
 
 .results {
   visibility: hidden;
   margin-left: 15vw;
-  width:max-content;
+  width: max-content;
   max-width: 50vw;
   margin-top: 15vh;
   margin-right: 1vw;
@@ -45,12 +86,12 @@ a:hover {
   padding: 20px;
   flex-direction: column;
   /* From https://css.glass */
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.33);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5.6px);
-  -webkit-backdrop-filter: blur(5.6px);
-  border: 1px solid rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(6.7px);
+  -webkit-backdrop-filter: blur(6.7px);
+  border: 1px solid rgba(255, 255, 255, 1);
 }
 .results .text {
   display: flex;
