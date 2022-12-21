@@ -29,35 +29,94 @@
             var bio = myJson.bio;
             var location = myJson.location;
 
-            console.log(myJson);
-            document.getElementById("name").innerHTML = name;
-            document.getElementById("blog").href = blog;
-            document.getElementById("blog").innerHTML = blog;
-            document.getElementById("bio").innerHTML = bio;
-            document.getElementById("location").innerHTML = location;
+            if (name != '') {
+              document.getElementById("name").innerHTML = name;
+              document.getElementById("name").style.display = "flex";
+            }
+            if (blog != '') {
+              console.log(blog)
+              document.getElementById("blog").href = blog;
+              document.getElementById("blog").innerHTML = blog;
+              document.getElementById("blogid").style.display = "flex";
+            }
+            if (bio != '') {
+              document.getElementById("bio").innerHTML = bio;
+              document.getElementById("bioid").style.display = "flex";
+            }
+            if (location != '') {
+              document.getElementById("location").innerHTML = location;
+              document.getElementById("locid").style.display = "flex";
+            }
+
             document.getElementById("image").src = image;
-            document.getElementById('results').style.visibility = 'visible';
+          });
+
+        fetch("https://api.github.com/users/" + id + "/repos")
+          .then((response) => {
+            return response.json();
+          })
+          .then((myJson) => {
+            var arr = [];
+            for (repo in myJson) {
+              arr.push([myJson[repo]["pushed_at"], myJson[repo]["language"]]);
+            }
+            arr.sort().reverse();
+            var langs = {};
+            var num = 0;
+            for (key in arr) {
+              if (num < 5) {
+                if (arr[key][1] != null) {
+                  num += 1;
+                  if (arr[key][1] in langs) {
+                    number = langs[arr[key][1]];
+                    langs[arr[key][1]] = number + 1;
+                  } else {
+                    langs[arr[key][1]] = 1;
+                  }
+                }
+              }
+            }
+            let list = document.getElementById("myList");
+            list.innerHTML = "";
+            let list_star = document.getElementById("grade");
+            list_star.innerHTML = "";
+
+            for (item in langs) {
+              let li = document.createElement("li");
+              li.innerText = item;
+              list.appendChild(li);
+
+              let lis = document.createElement("li");
+              var star = "";
+              for (i = 0; i < langs[item]; i++) {
+                star += "*";
+              }
+              lis.innerText = star;
+              list_star.appendChild(lis);
+            }
+            document.getElementById("results").style.visibility = "visible";
           });
       }
     </script>
 
     <div class="main">
-      <div id = 'results' class="results">
-        <div style="display: flex;flex-direction: row;max-width:fit-content;">
+      <div id="results" class="results">
+        <div style="display: flex; flex-direction: row; max-width: fit-content">
           <!--Image-->
           <img id="image" class="image" src="./assets/profile.png" />
 
           <div class="text">
             <!--Name-->
-            <h2 id="name"></h2>
+            <h2 style="display: flex;" id="name"></h2>
 
             <!--Blog-->
-            <div
+            <div id = 'blogid'
               style="
-                display: flex;
+                display: none;
                 flex-direction: row;
                 margin-bottom: 20px;
                 width: 50%;
+                display: none;
               "
             >
               <img
@@ -73,7 +132,7 @@
             </div>
 
             <!--Location-->
-            <div style="display: flex; flex-direction: row">
+            <div id = 'locid' style="display: none; flex-direction: row;">
               <img
                 src="./assets/location.png"
                 style="
@@ -85,18 +144,29 @@
               />
               <p style="margin-top: -5px" id="location"></p>
             </div>
+            <!--Languages-->
+            <div class="languages">
+              <h4 style="margin-bottom: 5px; color: #f29e21">Languages</h4>
+              <div style="display: flex; flex-direction: row">
+                <ul
+                  style="margin-right: 20px; margin-top: 15px"
+                  id="myList"
+                ></ul>
+                <ul class="stars" id="grade"></ul>
+              </div>
+            </div>
           </div>
         </div>
 
         <!--Bio-->
-        <div
+        <div id = 'bioid'
           style="
-            display: flex;
             flex-direction: row;
             margin-top: 20px;
             margin-left: 5px;
             margin-right: 10px;
-            width:fit-content;
+            width: fit-content;
+            display: none;
           "
         >
           <img
@@ -109,7 +179,7 @@
               opacity: 0.7;
             "
           />
-          <p style="margin-top: 2px; max-width: 40vw;" id="bio"></p>
+          <p style="margin-top: 2px; max-width: 40vw" id="bio"></p>
         </div>
       </div>
 
