@@ -15,252 +15,307 @@
     "
   >
     <script>
+      // Update information function
+      function update_info(name, image, blog, bio, location, langs) {
+        // Remove last user information
+        document.getElementById("name").innerHTML = "";
+        document.getElementById("name").style.display = "none";
+
+        document.getElementById("blog").href = "";
+        document.getElementById("blogid").style.display = "none";
+
+        document.getElementById("bio").innerHTML = null;
+        document.getElementById("bioid").style.display = "none";
+
+        document.getElementById("location").innerHTML = null;
+        document.getElementById("locid").style.display = "none";
+
+        // Add new information
+        if (name != "") {
+          document.getElementById("name").innerHTML = name;
+          document.getElementById("name").style.display = "flex";
+        }
+        if (blog != "") {
+          if (!blog.includes("http")) {
+            blog = "https://" + blog;
+          }
+          document.getElementById("blog").href = blog;
+          document.getElementById("blog").innerHTML = blog;
+          document.getElementById("blogid").style.display = "flex";
+        }
+        if (bio != null) {
+          document.getElementById("bio").innerHTML = bio;
+          document.getElementById("bioid").style.display = "flex";
+        }
+        if (location != null) {
+          document.getElementById("location").innerHTML = location;
+          document.getElementById("locid").style.display = "flex";
+        }
+
+        document.getElementById("image").src = image;
+        document.getElementById("results").style.visibility = "visible";
+
+        // Remove last user languages
+        document.getElementById("langs").style.display = "none";
+        let list = document.getElementById("myList");
+        list.innerHTML = "";
+        let list_star = document.getElementById("grade");
+        list_star.innerHTML = "";
+
+        // Add new languages
+        if (Object.keys(langs).length != 0) {
+          for (item in langs) {
+            let li = document.createElement("li");
+            li.innerText = item;
+            list.appendChild(li);
+
+            let lis = document.createElement("li");
+            var star = "";
+            for (i = 0; i < langs[item]; i++) {
+              star += "*";
+            }
+            lis.innerText = star;
+            list_star.appendChild(lis);
+          }
+          document.getElementById("langs").style.display = "flex";
+        }
+      }
+
       // Get id from user and send request to Github
       function get_id() {
         document.getElementById("results").style.visibility = "hidden";
         var id = document.getElementById("id").value;
 
-        // Fetch user information
-        fetch("https://api.github.com/users/" + id)
-          .then((response) => {
-            if (response.status != 404) {
-              document.getElementById("usernot").style.display = "none";
-              return response.json();
-            } else {
-              document.getElementById("usernot").style.display = "block";
-            }
-          })
-          .then((myJson) => {
-            var name = myJson.name;
-            var image = myJson.avatar_url;
-            var blog = myJson.blog;
-            var bio = myJson.bio;
-            var location = myJson.location;
+        if (id in localStorage) {
+          document.getElementById("usernot").style.display = "none";
 
-            // Remove last user information
-            document.getElementById("name").innerHTML = "";
-            document.getElementById("name").style.display = "none";
+          arr = localStorage.getItem(id);
+          myJson = JSON.parse(arr);
+          var name = myJson.name;
+          var image = myJson.image;
+          var blog = myJson.blog;
+          var bio = myJson.bio;
+          var location = myJson.location;
+          var langs = myJson.langs;
 
-            document.getElementById("blog").href = "";
-            document.getElementById("blogid").style.display = "none";
+          document.getElementById("local").style.display = "block";
 
-            document.getElementById("bio").innerHTML = null;
-            document.getElementById("bioid").style.display = "none";
-
-            document.getElementById("location").innerHTML = null;
-            document.getElementById("locid").style.display = "none";
-
-            // Add new information
-            if (name != "") {
-              document.getElementById("name").innerHTML = name;
-              document.getElementById("name").style.display = "flex";
-            }
-            if (blog != "") {
-              if (!blog.includes("http")) {
-                blog = "https://" + blog;
-              }
-              document.getElementById("blog").href = blog;
-              document.getElementById("blog").innerHTML = blog;
-              document.getElementById("blogid").style.display = "flex";
-            }
-            if (bio != null) {
-              document.getElementById("bio").innerHTML = bio;
-              document.getElementById("bioid").style.display = "flex";
-            }
-            if (location != null) {
-              document.getElementById("location").innerHTML = location;
-              document.getElementById("locid").style.display = "flex";
-            }
-
-            document.getElementById("image").src = image;
-            // Fetch user repositories
-            fetch("https://api.github.com/users/" + id + "/repos")
-              .then((response) => {
+          update_info(name, image, blog, bio, location, langs);
+        } else {
+          document.getElementById("local").style.display = "none";
+          // Fetch user information
+          fetch("https://api.github.com/users/" + id)
+            .then((response) => {
+              if (response.status != 404) {
+                document.getElementById("usernot").style.display = "none";
                 return response.json();
-              })
-              .then((myJson) => {
-                var arr = [];
-                for (repo in myJson) {
-                  arr.push([
-                    myJson[repo]["pushed_at"],
-                    myJson[repo]["language"],
-                  ]);
-                }
-                arr.sort().reverse();
+              } else {
+                document.getElementById("usernot").style.display = "block";
+              }
+            })
+            .then((myJson) => {
+              var name = myJson.name;
+              var image = myJson.avatar_url;
+              var blog = myJson.blog;
+              var bio = myJson.bio;
+              var location = myJson.location;
 
-                // Create user dictionary languages
-                var langs = {};
-                var num = 0;
-                for (key in arr) {
-                  if (num < 5) {
-                    if (arr[key][1] != null) {
-                      num += 1;
-                      if (arr[key][1] in langs) {
-                        number = langs[arr[key][1]];
-                        langs[arr[key][1]] = number + 1;
-                      } else {
-                        langs[arr[key][1]] = 1;
+              info = {
+                name: name,
+                image: image,
+                blog: blog,
+                bio: bio,
+                location: location,
+              };
+
+              // Fetch user repositories
+              fetch("https://api.github.com/users/" + id + "/repos")
+                .then((response) => {
+                  return response.json();
+                })
+                .then((myJson) => {
+                  var arr = [];
+                  for (repo in myJson) {
+                    arr.push([
+                      myJson[repo]["pushed_at"],
+                      myJson[repo]["language"],
+                    ]);
+                  }
+                  arr.sort().reverse();
+
+                  // Create user dictionary languages
+                  var langs = {};
+                  var num = 0;
+                  for (key in arr) {
+                    if (num < 5) {
+                      if (arr[key][1] != null) {
+                        num += 1;
+                        if (arr[key][1] in langs) {
+                          number = langs[arr[key][1]];
+                          langs[arr[key][1]] = number + 1;
+                        } else {
+                          langs[arr[key][1]] = 1;
+                        }
                       }
                     }
                   }
-                }
-
-                // Remove last user languages
-                document.getElementById("langs").style.display = "none";
-                let list = document.getElementById("myList");
-                list.innerHTML = "";
-                let list_star = document.getElementById("grade");
-                list_star.innerHTML = "";
-
-                // Add new languages
-                if (Object.keys(langs).length != 0) {
-                  for (item in langs) {
-                    let li = document.createElement("li");
-                    li.innerText = item;
-                    list.appendChild(li);
-
-                    let lis = document.createElement("li");
-                    var star = "";
-                    for (i = 0; i < langs[item]; i++) {
-                      star += "*";
-                    }
-                    lis.innerText = star;
-                    list_star.appendChild(lis);
-                  }
-                  document.getElementById("langs").style.display = "flex";
-                }
-              });
-            document.getElementById("results").style.visibility = "visible";
-          });
+                  info.langs = langs;
+                  localStorage.setItem(id, JSON.stringify(info));
+                  update_info(name, image, blog, bio, location, info.langs);
+                  document.getElementById("results").style.visibility =
+                    "visible";
+                });
+            });
+        }
       }
     </script>
+    <div style="display: flex; flex-direction: column; width: fit-content">
+      <div class="main">
+        <div id="results" class="results">
+          <div
+            style="display: flex; flex-direction: row; max-width: fit-content"
+          >
+            <!--Image-->
+            <img id="image" class="image" src="./assets/profile.png" />
 
-    <div class="main">
-      <div id="results" class="results">
-        <div style="display: flex; flex-direction: row; max-width: fit-content">
-          <!--Image-->
-          <img id="image" class="image" src="./assets/profile.png" />
+            <div class="text">
+              <!--Name-->
+              <h2 style="display: flex" id="name"></h2>
 
-          <div class="text">
-            <!--Name-->
-            <h2 style="display: flex" id="name"></h2>
-
-            <!--Blog-->
-            <div
-              id="blogid"
-              style="
-                display: none;
-                flex-direction: row;
-                margin-bottom: 20px;
-                width: 100%;
-                display: none;
-              "
-            >
-              <img
-                src="./assets/link.png"
+              <!--Blog-->
+              <div
+                id="blogid"
                 style="
-                  width: 20px;
-                  height: 20px;
-                  margin-right: 10px;
-                  margin-bottom: 0px;
-                "
-              />
-              <a style="margin-top: -5px; width: 50%" id="blog"></a>
-            </div>
-
-            <!--Location-->
-            <div id="locid" style="display: none; flex-direction: row">
-              <img
-                src="./assets/location.png"
-                style="
-                  width: 20px;
-                  height: 20px;
-                  margin-right: 10px;
-                  margin-bottom: 0px;
-                "
-              />
-              <p style="margin-top: -5px" id="location"></p>
-            </div>
-            <!--Languages-->
-            <div id="langs" class="languages" style="display: none">
-              <img
-                src="./assets/langs.png"
-                style="
-                  width: 20px;
-                  height: 20px;
-                  margin-top: 0px;
-                  margin-right: 10px;
-                  margin-bottom: 0px;
-                "
-              />
-              <h4
-                style="
-                  margin-bottom: 5px;
-                  margin-top: -25px;
-                  margin-left: 30px;
-                  color: #f29e21;
+                  display: none;
+                  flex-direction: row;
+                  margin-bottom: 20px;
+                  width: 100%;
+                  display: none;
                 "
               >
-                Languages
-              </h4>
-              <div style="display: flex; flex-direction: row">
-                <ul
-                  style="margin-right: 40px; margin-top: 15px"
-                  id="myList"
-                ></ul>
-                <ul class="stars" id="grade"></ul>
+                <img
+                  src="./assets/link.png"
+                  style="
+                    width: 20px;
+                    height: 20px;
+                    margin-right: 10px;
+                    margin-bottom: 0px;
+                  "
+                />
+                <a style="margin-top: -5px; width: 50%" id="blog"></a>
+              </div>
+
+              <!--Location-->
+              <div id="locid" style="display: none; flex-direction: row">
+                <img
+                  src="./assets/location.png"
+                  style="
+                    width: 20px;
+                    height: 20px;
+                    margin-right: 10px;
+                    margin-bottom: 0px;
+                  "
+                />
+                <p style="margin-top: -5px" id="location"></p>
+              </div>
+              <!--Languages-->
+              <div id="langs" class="languages" style="display: none">
+                <img
+                  src="./assets/langs.png"
+                  style="
+                    width: 20px;
+                    height: 20px;
+                    margin-top: 0px;
+                    margin-right: 10px;
+                    margin-bottom: 0px;
+                  "
+                />
+                <h4
+                  style="
+                    margin-bottom: 5px;
+                    margin-top: -25px;
+                    margin-left: 30px;
+                    color: #f29e21;
+                  "
+                >
+                  Languages
+                </h4>
+                <div style="display: flex; flex-direction: row">
+                  <ul
+                    style="margin-right: 40px; margin-top: 15px"
+                    id="myList"
+                  ></ul>
+                  <ul class="stars" id="grade"></ul>
+                </div>
               </div>
             </div>
           </div>
+
+          <!--Bio-->
+          <div
+            id="bioid"
+            style="
+              flex-direction: row;
+              margin-top: 20px;
+              margin-left: 5px;
+              margin-right: 10px;
+              width: fit-content;
+              display: none;
+            "
+          >
+            <img
+              src="./assets/bio.png"
+              style="
+                width: 25px;
+                height: 25px;
+                margin-right: 10px;
+                margin-bottom: 0px;
+                opacity: 0.7;
+              "
+            />
+            <p style="margin-top: 2px; max-width: 40vw" id="bio"></p>
+          </div>
         </div>
 
-        <!--Bio-->
-        <div
-          id="bioid"
-          style="
-            flex-direction: row;
-            margin-top: 20px;
-            margin-left: 5px;
-            margin-right: 10px;
-            width: fit-content;
-            display: none;
-          "
-        >
-          <img
-            src="./assets/bio.png"
+        <!--Get ID-->
+        <div class="id-get">
+          <h1>Give me ID!</h1>
+          <p
+            id="usernot"
             style="
-              width: 25px;
-              height: 25px;
-              margin-right: 10px;
-              margin-bottom: 0px;
-              opacity: 0.7;
+              display: none;
+              background-color: red;
+              color: azure;
+              border-radius: 5px;
+              padding: 5px;
+              padding-bottom: 10px;
+              transition: all 200ms;
+              text-align: center;
+              margin-top: -3vw;
             "
-          />
-          <p style="margin-top: 2px; max-width: 40vw" id="bio"></p>
+          >
+            Username not found
+          </p>
+          <input class="input" type="text" id="id" />
+          <button class="button" onclick="get_id()">Let's Go!</button>
         </div>
       </div>
-
-      <!--Get ID-->
-      <div class="id-get">
-        <h1>Give me ID!</h1>
-        <p
-          id="usernot"
-          style="
-            display: none;
-            background-color: red;
-            color: azure;
-            border-radius: 5px;
-            padding: 5px;
-            padding-bottom: 10px;
-            transition: all 200ms;
-            text-align: center;
-            margin-top: -3vw;
-          "
-        >
-          Username not found
-        </p>
-        <input class="input" type="text" id="id" />
-        <button class="button" onclick="get_id()">Let's Go!</button>
+      <div
+        id="local"
+        style="
+          display: none;
+          background-color: #f29e21;
+          margin-left: 15vw;
+          padding: 10px;
+          margin-top: 1vw;
+          font-size: 20px;
+          color: azure;
+          width: auto;
+          text-align: center;
+          border-radius: 10px;
+        "
+      >
+        This data is from local storage
       </div>
     </div>
   </body>

@@ -19,6 +19,7 @@ a:hover {
   margin-left: 0px;
   display: flex;
   flex-direction: row;
+  width: fit-content;
 }
 
 /* frame of get id part */
