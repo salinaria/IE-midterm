@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!--Title and favicon-->
     <title>MyGithub</title>
-    <link rel='shortcut icon' type='image/x-icon' href='./assets/favicon.png' />
+    <link rel="shortcut icon" type="image/x-icon" href="./assets/favicon.png" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="style.css" />
@@ -16,7 +17,7 @@
     "
   >
     <script>
-      // Update information function
+      // Update information and favorite languages function
       function update_info(name, image, blog, bio, location, langs) {
         // Remove last user information
         document.getElementById("name").innerHTML = "";
@@ -56,7 +57,7 @@
         document.getElementById("image").src = image;
         document.getElementById("results").style.visibility = "visible";
 
-        // Remove last user languages
+        // Remove last user favorite languages
         document.getElementById("langs").style.display = "none";
         let list = document.getElementById("myList");
         list.innerHTML = "";
@@ -87,6 +88,7 @@
         document.getElementById("results").style.visibility = "hidden";
         var id = document.getElementById("id").value;
 
+        // Check if ID was loaded before in local storage
         if (id in localStorage) {
           document.getElementById("usernot").style.display = "none";
 
@@ -107,6 +109,7 @@
           // Fetch user information
           fetch("https://api.github.com/users/" + id)
             .then((response) => {
+              // Check ID is in Github or not
               if (response.status != 404) {
                 document.getElementById("usernot").style.display = "none";
                 return response.json();
@@ -297,7 +300,15 @@
           >
             Username not found
           </p>
-          <input class="input" type="text" id="id" />
+          <input class="input" type="text" placeholder="Search ID" id="id" onkeydown="search(this)" />
+          <script>
+            // Get ID bu pressing Enter
+            function search(ele) {
+              if (event.key === "Enter") {
+                get_id();
+              }
+            }
+          </script>
           <button class="button" onclick="get_id()">Let's Go!</button>
         </div>
       </div>
