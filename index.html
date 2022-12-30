@@ -17,6 +17,9 @@
     "
   >
     <script>
+      // Remove all stored data in localstorage after opening page again
+      localStorage.clear();
+
       // Update information and favorite languages function
       function update_info(name, image, blog, bio, location, langs) {
         // Remove last user information
@@ -82,7 +85,10 @@
           document.getElementById("langs").style.display = "flex";
         }
       }
-
+      // None display of network error
+      function none_display() {
+        document.getElementById("usernot").style.display = "none";
+      }
       // Get id from user and send request to Github
       function get_id() {
         document.getElementById("results").style.visibility = "hidden";
@@ -109,12 +115,25 @@
           // Fetch user information
           fetch("https://api.github.com/users/" + id)
             .then((response) => {
-              // Check ID is in Github or not
-              if (response.status != 404) {
+              // Check response status
+              if (response.status == 200) {
                 document.getElementById("usernot").style.display = "none";
                 return response.json();
               } else {
+                
+                // user not found 
+                if (response.status == 404) {
+                  document.getElementById("usernot").innerText =
+                    "Username not found";
+                }
+                // other network error
+                else {
+                  document.getElementById("usernot").innerText =
+                    "Network error occurred";
+                }
                 document.getElementById("usernot").style.display = "block";
+                // Hide the error after 3 seconds
+                setTimeout(none_display, 3000);
               }
             })
             .then((myJson) => {
@@ -297,10 +316,14 @@
               text-align: center;
               margin-top: -3vw;
             "
-          >
-            Username not found
-          </p>
-          <input class="input" type="text" placeholder="Search ID" id="id" onkeydown="search(this)" />
+          ></p>
+          <input
+            class="input"
+            type="text"
+            placeholder="Search ID"
+            id="id"
+            onkeydown="search(this)"
+          />
           <script>
             // Get ID bu pressing Enter
             function search(ele) {
